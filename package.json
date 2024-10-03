@@ -1,26 +1,44 @@
 {
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "npm run typecheck && vite build",
+    "dev:chrome": "cross-env BROWSER=chrome vite",
+    "dev:firefox": "cross-env BROWSER=firefox vite",
+    "build": "npm run typecheck && npm run build:chrome && npm run build:firefox",
+    "build:chrome": "cross-env BROWSER=chrome vite build",
+    "build:firefox": "cross-env BROWSER=firefox vite build",
     "typecheck": "tsc",
     "lint": "eslint",
     "lint:fix": "eslint --fix",
+    "stylelint": "stylelint '**/*.css'",
+    "stylelint:fix": "stylelint --fix '**/*.css'",
     "prepare": "husky"
+  },
+  "dependencies": {
+    "dedent": "^1.5.3",
+    "sanitize.css": "^13.0.0",
+    "webextension-polyfill": "^0.12.0",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^3.7.3",
-    "@crxjs/vite-plugin": "^2.0.0-beta.25",
-    "@types/chrome": "^0.0.273",
+    "@stylistic/stylelint-config": "^2.0.0",
     "@types/node": "^22.7.4",
+    "@types/webextension-polyfill": "^0.12.1",
+    "cross-env": "^7.0.3",
     "eslint": "^9.11.1",
     "husky": "^9.1.6",
     "lint-staged": "^15.2.10",
+    "stylelint": "^16.9.0",
+    "stylelint-config-clean-order": "^6.1.0",
+    "stylelint-config-standard": "^36.0.1",
     "typescript": "5.5",
     "vite": "^5.4.8",
-    "vite-plugin-zip-pack": "^1.2.4"
+    "vite-plugin-web-extension": "^4.2.0",
+    "vite-plugin-zip-pack": "^1.2.4",
+    "webext-patterns": "^1.5.0"
   },
   "lint-staged": {
-    "*": "eslint --fix"
+    "*": "eslint --fix",
+    "*.css": "stylelint --fix"
   }
 }

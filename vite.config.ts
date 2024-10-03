@@ -1,33 +1,41 @@
 import type { UserConfig } from 'vite';
 import path from 'node:path';
-import { crx } from '@crxjs/vite-plugin';
+import process from 'node:process';
+import webExtension from 'vite-plugin-web-extension';
 import zipPack from 'vite-plugin-zip-pack';
-import manifest from './src/manifest';
+import createManifest from './src/create-manifest';
 
 const RELEASE_NAME = 'copyable';
-const PORT = 5173;
+
+const browser = process.env.BROWSER || 'chrome';
+
+if (browser !== 'chrome' && browser !== 'firefox') {
+  throw new TypeError('BROWSER is not valid.');
+}
+
+const outDir = path.resolve(import.meta.dirname, 'dist', browser);
+const manifest = createManifest(browser);
 
 export default {
   root: 'src',
   build: {
-    outDir: path.resolve(import.meta.dirname, 'dist'),
+    outDir,
     emptyOutDir: true,
   },
-  // To work HMR
-  server: {
-    strictPort: true,
-    port: PORT,
-    hmr: {
-      clientPort: PORT,
-    },
-  },
   plugins: [
-    crx({
-      manifest,
+    webExtension({
+      manifest: () => manifest,
+      browser,
+      additionalInputs: [
+        'content-isolated',
+        'content-main',
+        'error-window/index.html',
+      ],
     }),
     zipPack({
+      inDir: outDir,
       outDir: 'releases',
-      outFileName: `${RELEASE_NAME}-v${manifest.version}.zip`,
+      outFileName: `${RELEASE_NAME}-${browser}-v${manifest.version}.zip`,
       filter: (fileName) => fileName !== '.vite',
     }),
   ],

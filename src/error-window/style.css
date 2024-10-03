@@ -1,0 +1,9 @@
+@import url("sanitize.css");
+@import url("sanitize.css/typography");
+
+#error {
+  margin: 10px;
+  font-size: 14px;
+  color: #e76541;
+  white-space: pre-wrap;
+}
